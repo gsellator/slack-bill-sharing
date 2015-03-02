@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <title>slack-bill-sharing Admin</title>
+    <meta name="description" content="slack-bill-sharing Admin">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/png" href="favicon.png" />
+  </head>
+  <body>
+    <div id="container">
+      <table>
+        <thead>
+          <tr>
+            <th>from</th>
+            <th>to</th>
+            <th>value</th>
+            <th>actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (var i=0; i<result.length; i++) {%>
+          <tr>
+            <td><%= result[i].from %></td>
+            <td><%= result[i].to %></td>
+            <td><%= result[i].value %></td>
+            <td><a href="/delete/<%= result[i]._id %>">delete</a></td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+
+      <a href="/delete">delete all</a>
+    </div>
+  </body>
+</html>

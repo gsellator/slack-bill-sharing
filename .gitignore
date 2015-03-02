@@ -1,0 +1,6 @@
+pkg
+*.DS_Store
+node_modules
+public/components
+.ftppass
+.rebooted
