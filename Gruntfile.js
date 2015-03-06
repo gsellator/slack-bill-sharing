@@ -13,7 +13,7 @@ module.exports = function(grunt) {
     sass: {
       dev: {
         options: {
-          sourcemap: true,
+          sourceMap: true,
           update: true
         },
         files: [{
