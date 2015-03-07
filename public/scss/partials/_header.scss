@@ -1,0 +1,56 @@
+header{
+  z-index: 1;
+  position: relative;
+
+  .content{
+    position: relative;
+    background-color: $grey-0;
+    border-bottom: solid $grey-4 1px;
+    height: 40px;
+
+    .maintitle{
+      display: inline-block;
+      font-size: 30px;
+      font-weight: 200;
+      line-height: 39px;
+      padding-left: 4px;
+      @media (max-width: $break-medium){ display: none;}
+    }
+
+    nav{
+      position: absolute;
+      top: 0;
+      height: 40px;
+      right: 0;
+      left: 190px;
+      @media (max-width: $break-medium){ left: 0;}
+
+
+      ul{
+        width: 100%;
+        text-align: right;
+        @media (max-width: $break-medium){text-align: center;}
+
+        li{
+          display: inline-block;
+          &:last-child{ @media (max-width: $break-medium){border-right: solid $grey-4 1px;}}
+
+          a{
+            display: inline-block;
+            text-align: center;
+            height: 39px;
+            line-height: 37px;
+            padding: 0 14px;
+            color: black;
+            border-left: solid $grey-4 1px;
+            &:hover{background-color: $grey-2;}
+            &:active{background-color: white;}
+
+
+            @media (max-width: $break-medium){ font-size: 12px; padding: 0 7px;}
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,5 @@
 var mongoose = require('mongoose'),
+    q = require('q'),
     Schema = mongoose.Schema,
     model = module.exports;
 
@@ -13,6 +14,15 @@ mongoose.model('Expense', ExpenseSchema);
 var ExpenseModel = mongoose.model('Expense');
 
 //CRUD WelcomePack
+
+//return q.ninvoke(UsersModel, 'findOne', {"_id": _id})
+//    .then(function(result){
+//    if (result === null)
+//      throw new Error("_id does not exist");
+//    return result;
+//  });
+
+
 model.createExpenses = function (array, callback) {
   ExpenseModel.create(array, function(err, result){
     callback(result);

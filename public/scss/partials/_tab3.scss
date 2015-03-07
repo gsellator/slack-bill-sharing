@@ -1,0 +1,85 @@
+.tab3-widget{
+  padding: 0;
+  position: relative;
+  border: solid #dddddd 1px;
+  border-radius: 4px;
+  overflow: hidden;
+
+  .btn{
+    height: 30px;
+    line-height: 26px;
+    margin: 4px 0 4px 0;
+  }
+
+  table{
+    border-collapse: collapse;
+    width: 100%;
+    th, td{padding: 0;}
+    @media (max-width: $break-small){font-size: 10px;}
+
+    thead{
+      height: 43px;
+      background-color: $grey-1;
+      border-bottom: solid $grey-4 1px;
+
+      th{
+        &:not(:last-child){border-right: solid $grey-3 1px;}
+
+        &.headerSortUp .indicator{
+          background-image: url(/img/asc.png);
+          background-repeat: no-repeat;
+          background-position: bottom center;
+          background-size: 40px 41px;
+        }
+
+        &.headerSortDown .indicator{
+          background-image: url(/img/desc.png);
+          background-repeat: no-repeat;
+          background-position: top center;
+          background-size: 40px 41px;
+        }
+      }
+
+      .indicator{
+        width: 100%;
+        line-height: 40px;
+        padding: 0 8px;
+        display: inline-block;
+        cursor: pointer;
+        text-align: center;
+        height: 42px;
+        &:hover{background-color: $light-blue;}
+      }
+    }
+
+    tbody{
+      tr{
+        height: 22px;
+        text-align: center;
+        &:nth-child(odd){background-color: $grey-0;}
+        &.interactive{
+          cursor: pointer;
+          &:hover{background-color: $light-blue;}
+          &:active{background-color: $ultralight-blue;}
+        }
+
+        td{
+          &:not(:last-child){border-right: solid $grey-3 1px;}
+
+          .btn{
+            background-color: transparent;
+            color: $dark-grey;
+            &:hover{border-color: $dark-grey; background-color: $grey-4; color: $dark-grey;}
+            &:active{background-color: $grey-0;}
+            &:not(:first-child){border-top-left-radius: 0; border-bottom-left-radius: 0; border-left: none;}
+            &:not(:last-child){border-top-right-radius: 0; border-bottom-right-radius: 0;}
+          }
+        }
+      }
+    }
+
+    .desktop{
+      @media (max-width: $break-small){display: none;}
+    }
+  }
+}

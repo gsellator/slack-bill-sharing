@@ -1,0 +1,10 @@
+{
+  "prod": {
+    "username": "prod-server-username",
+    "password": "prod-server-password"
+  },
+  "admin": {
+    "username": "admin-username",
+    "password": "admin-password"
+  }
+}

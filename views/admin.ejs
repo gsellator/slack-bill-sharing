@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <%- include partials/head.ejs %>
+  </head>
+  <body>
+    <%- include partials/header.ejs %>
+
+    <div id="container">
+      <div class="tab3-widget">
+        <table>
+          <thead>
+            <tr>
+              <th>from</th>
+              <th>to</th>
+              <th>value</th>
+              <th>actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (var i=0; i<result.length; i++) {%>
+            <tr>
+              <td><%= result[i].from %></td>
+              <td><%= result[i].to %></td>
+              <td><%= result[i].value %></td>
+              <td><a href="/delete/<%= result[i]._id %>">delete</a></td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="text-align: center;">
+        <a href="/delete" class="btn dark">delete all</a>
+      </div>
+    </div>
+  </body>
+</html>

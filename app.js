@@ -1,9 +1,12 @@
 var pjson = require('./package.json'),
     config = require('./config/config'),
     bddUri = config.bddUri,
+    auth = require('./helpers/auth'),
     initializer = require('./helpers/initializer'),
     expenseModel = require('./models/expense'),
-    memberModel = require('./models/member');
+    memberModel = require('./models/member'),
+    adminCtrl = require('./controllers/admin'),
+    loginCtrl = require('./controllers/login');
 
 var express = require('express'),
     bodyParser = require('body-parser'),
@@ -46,7 +49,7 @@ var manageMsg = function(text, bool, channel){
           var toArray = [];
           var value = 0;
           var recipients = 0;
-          
+
           if (text.indexOf(' to ') != -1) {
             value = parseFloat(text.split(" to ")[0].replace('$', '').replace('€', '').replace(' ', ''));
             toArray = text.split(" to ")[1].split(" ");
@@ -213,33 +216,36 @@ slack.on('error', function(error) {
 slack.login();
 
 // Test
-app.get('/', function(req, res){
-  var text = "<@U03LYCL46>: Adrien paid 1";
-  var text = "<@U03LYCL46>: team";
+//app.get('/', function(req, res){
+//  var text = "<@U03LYCL46>: Adrien paid 1";
+//  var text = "<@U03LYCL46>: team";
+//
+//  //  manageMsg(text, false);
+//  //  writeDigest(false);
+//
+//  res.send('ok');
+//  res.end();
+//});
 
-  //  manageMsg(text, false);
-  //  writeDigest(false);
+app.get('/admin', auth.private, adminCtrl.get);
+app.get('/login', loginCtrl.get);
+app.post('/login', loginCtrl.post);
 
-  res.send('ok');
-  res.end();
-});
-
-app.get('/home', function(req, res){
-  expenseModel.getAllExpenses(function(result){
-    res.render('home.ejs', {result: result});
-  });
-});
 
 app.get('/delete', function(req, res){
   expenseModel.removeAllExpenses(function(result){
-    res.redirect('/home');
+    res.redirect('/admin');
   });
 });
 
 app.get('/delete/:id', function(req, res){
   expenseModel.removeExpense(req.params.id, function(result){
-    res.redirect('/home');
+    res.redirect('/admin');
   });
+});
+
+app.use(function(req, res, next){
+  res.redirect('/login');
 });
 
 console.log('app running on port ' + config.port);

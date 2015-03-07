@@ -1,0 +1,139 @@
+#login{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: $medium-blue;
+  background: url("../img/login-back.png") 50% 50% repeat $ultralight-blue;
+  background-size: 200px 375px;
+  z-index: 2000;
+  overflow: hidden;
+
+  .logger{
+    position: absolute;
+    top: 50%; left: 50%; width: 400px; height: 200px;
+    margin-top: -100px; margin-left: -200px;
+    background: $dark-grey;
+    z-index: 2001;
+    border-radius: 16px;
+    text-align: center;
+
+    @media (max-width: $break-medium){
+      top: 10px; width: 280px; height: 300px;
+      margin-top: 0; margin-left: -140px;
+    }
+
+    img{
+      margin-top: 20px;
+      width: 150px; height: 150px;
+      @media (max-width: $break-medium){ width: 100px; height: 100px; }
+    }
+
+    .field{
+      position: relative;
+      margin: 0 10%;
+      text-align: left;
+
+      input{
+        margin: 6px 0;
+        padding: 8px;
+        width: 100%; height: 40px;
+        font-size: 19px;
+        color: white;
+        background: transparent;
+        border: none;
+
+        &:focus {
+          outline: 0;
+          background-color: rgba(255, 255, 255, 0.1);
+          border: none;
+        }
+
+        &.password{
+          width: 68%;
+        }
+      }
+
+
+    }
+
+    .field-box{
+      margin: 0 10%;
+      color: $grey-1;
+      padding-top: 10px;
+    }
+
+    .input-underline{
+      height: 1px;
+      background-color: $grey-1;
+    }
+
+    .btn{
+      position: absolute;
+      top: 6px; right: 0;
+      width: 30%;
+      min-width: initial;
+    }
+
+    .onoffswitch{
+      font-size: 12px;
+      line-height: 20px;
+      width: 172px;
+      background: transparent;
+      margin-top: 10px;
+      padding-left: 0;
+      height: 30px;
+
+      .label{
+        position: absolute;
+        top: 0;
+        line-height: 30px;
+        font-size: 16px;
+        text-align: left;
+      }
+    }
+  }
+
+  .dld{
+    position:absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 120px;
+    height: 120px;
+    opacity: 0.6;
+    @media (max-width: $break-medium){ display: none; }
+
+    img{
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .footer{
+    position:absolute;
+    right: 10px; bottom: 0px; left: 80px; height: 30px;
+    text-align: right;
+    @media (max-width: $break-medium){
+      right: 4px; left: 4px;
+      text-align: center;
+    }
+
+
+    a{
+      color: $dark-grey;
+    }
+
+    a:hover, a:active{
+      color: $grey-6;
+    }
+
+    span{
+      &:not(:first-child) {
+        padding-left: 10px;
+      }
+      &:not(:last-child) {
+        padding-right: 10px;
+        border-right: solid $dark-grey 1px;
+      }
+    }
+  }
+}
