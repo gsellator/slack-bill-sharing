@@ -30,20 +30,22 @@ var getTotal = function(name1, name2, channel, currency){
 };
 
 var addExpense = function(cmd, channel, currency){
+  var from,
+      toArray = [],
+      value = 0,
+      recipients = 0,
+      query = [];
+
   return memberModel.getAll()
   .then(function(team){
     if (team == null)
       throw new Error("Oink oink, it seems your team is empty... Add someone by asking me \"add bob\".");
 
     // Get from
-    var from = cmd.split(" paid ")[0].replace(' ', '');
+    from = cmd.split(" paid ")[0].replace(' ', '');
     cmd = cmd.split(" paid ")[1];
 
     // Get to
-    var toArray = [];
-    var value = 0;
-    var recipients = 0;
-
     if (cmd.indexOf(' to ') != -1) {
       value = parseFloat(cmd.split(" to ")[0].replace('$', '').replace('€', '').replace(' ', ''));
       toArray = cmd.split(" to ")[1].split(" ");
@@ -60,7 +62,6 @@ var addExpense = function(cmd, channel, currency){
     if (recipients === 0 || isNaN(value))
       throw new Error("Oink oink, well... I think you made a mistake in your message...");
 
-    var query = [];
     value = value / recipients;
     toArray.forEach(function(elt, i) {
       query[query.length] = {
@@ -70,6 +71,23 @@ var addExpense = function(cmd, channel, currency){
       }
     });
 
+    return memberModel.get(from)
+  })
+  .then(function(result){
+    if (result == null)
+      throw new Error("Oink oink, " + from + " is not a member of your team. Add him with the command \"add " + from + "\".");
+
+    var arrayOfPromises = [];
+    for(var i=0; i<toArray.length; i++){
+      arrayOfPromises[arrayOfPromises.length] = memberModel.get(toArray[i])
+    }
+    return q.all(arrayOfPromises)
+  })
+  .then(function(results){
+    results.forEach(function(elt, i) {
+      if (elt === null)
+        throw new Error("Oink oink, " + toArray[i] + " is not a member of your team. Add him with the command \"add " + toArray[i] + "\".");
+    });
     return expenseModel.createFromArray(query);
   })
   .then(function(){
@@ -79,7 +97,12 @@ var addExpense = function(cmd, channel, currency){
 
 var addMember = function(cmd, channel){
   cmd = cmd.replace(' add ', '').replace(' ', '');
-  return memberModel.create({username: cmd})
+  return memberModel.get(cmd)
+  .then(function(result){
+    if (result != null)
+      throw new Error("Oink oink, " + cmd + " is already a member of your team.");
+    return memberModel.create({username: cmd});
+  })
   .then(function(){
     return sendResponse("Oink oink, got it! I added " + cmd + " to your team!", channel);
   });
@@ -87,7 +110,14 @@ var addMember = function(cmd, channel){
 
 var removeMember = function(cmd, channel){
   cmd = cmd.replace(' remove ', '').replace(' ', '');
-  return memberModel.removeByUsername(cmd)
+
+
+  return memberModel.get(cmd)
+  .then(function(result){
+    if (result === null)
+      throw new Error("Oink oink, I couldn't find any " + cmd + " in your team.");
+    return memberModel.removeByUsername(cmd)
+  })
   .then(function(){
     sendResponse("Oink oink, got it! I removed " + cmd + " from your team!", channel);
   });
@@ -107,7 +137,7 @@ var showTeam = function(channel){
       else if (i == result.length-2)
         team += " & ";
     }
-    return sendResponse("Oink oink, here is you team pal: " + team, channel);
+    return sendResponse("Oink oink, here are your team members: " + team, channel);
   })
   .then(function (){
     return sendResponse("Remember you can add or remove someone by asking \"add sandy\" or \"remove bob\".", channel);
