@@ -14,71 +14,39 @@ mongoose.model('Expense', ExpenseSchema);
 var ExpenseModel = mongoose.model('Expense');
 
 //CRUD WelcomePack
-
-//return q.ninvoke(UsersModel, 'findOne', {"_id": _id})
-//    .then(function(result){
-//    if (result === null)
-//      throw new Error("_id does not exist");
-//    return result;
-//  });
-
-
-model.createExpenses = function (array, callback) {
-  ExpenseModel.create(array, function(err, result){
-    callback(result);
-  });
-  //  var array = [{ type: 'jelly bean' }, { type: 'snickers' }];
-  //  Candy.create(array, function (err, jellybean, snickers) {
-  //    if (err) // ...
-  //      });
-
-  //  var newExpense = new ExpenseModel({
-  //    from: from,
-  //    to: to,
-  //    value: value
-  //  });
-  //  newExpense.save(function (err, result) {
-  //    callback(result);
-  //  });
+model.create = function (expense) {
+  return  q.ninvoke(ExpenseModel, 'create', expense);
 };
 
-model.getExpenses = function (from, to, callback) {
-  ExpenseModel.find({from: from, to: to}, function (err, result) {
-    if (err) { throw err; }
-    callback(result);
-  });
+model.createFromArray = function (array) {
+  return  q.ninvoke(ExpenseModel, 'create', array);
 };
 
-model.getExpensesSum = function (from, to, callback) {
-  ExpenseModel.aggregate()
+model.get = function (from, to) {
+  return q.ninvoke(ExpenseModel, 'find', {from: from, to: to});
+};
+
+model.getSum = function (from, to) {
+  return ExpenseModel.aggregate()
   .match({ from: from, to: to })
   .group({ _id:{ from: "$from", to: "$to" }, total: {$sum: "$value"} })
-  .exec(function (err, result) {
-    if (err) { throw err; }
+  .exec()
+  .then(function (result) {
     if (result.length == 0)
-      callback(0);
+      return 0;
     else
-      callback(result[0].total);
+      return result[0].total;
   });
 };
 
-model.getAllExpenses = function (callback) {
-  ExpenseModel.find({}, function (err, result) {
-    if (err) { throw err; }
-    callback(result);
-  });
+model.getAll = function () {
+  return q.ninvoke(ExpenseModel, 'find', {});
 };
 
-model.removeExpense = function (_id, callback) {
-  ExpenseModel.remove({_id: _id}, function (err, result) {
-    if (err) { throw err; }
-    callback(result);
-  });
+model.remove = function (_id) {
+  return q.ninvoke(ExpenseModel, 'remove', {_id: _id});
 };
 
-model.removeAllExpenses = function (callback) {
-  ExpenseModel.remove({}, function (err, result) {
-    if (err) { throw err; }
-    callback(result);
-  });
+model.removeAll = function () {
+  return q.ninvoke(ExpenseModel, 'remove', {});
 };

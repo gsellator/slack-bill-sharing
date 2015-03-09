@@ -1,0 +1,51 @@
+#container.admin{
+  section{
+    margin: 0 60px;
+    &:not(:last-child){
+      border-bottom: solid $grey-5 1px;
+    }
+  }
+
+  h1{
+    text-align: center;
+  }
+
+  th{
+    font-size: 16px;
+    padding: 10px 0;
+  }
+
+  form{
+    margin: 40px 0 60px 0;
+    text-align: center;
+
+    input{
+      margin: 0;
+      padding: 0 6px;
+      height: 38px;
+      width: 200px;
+      color: $dark-grey;
+      border: solid $grey-5 1px;
+      &:focus{border: solid $fluo-blue 1px;}
+    }
+
+    select {
+      margin: 0;
+      padding: 0 6px;
+      width: 200px;
+      height: 38px;
+      color: $dark-grey;
+      border: solid $grey-5 1px;
+      vertical-align: top;
+      &:focus{border: solid $fluo-blue 1px;}
+      //
+      //      option{color: $dark-grey; background-color: white;}
+      //
+      //      &:focus {
+      //        outline: solid $medium-grey 1px;;
+      //      }
+    }
+
+
+  }
+}

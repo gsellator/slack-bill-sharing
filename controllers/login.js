@@ -13,8 +13,8 @@ module.exports = {
   },
 
   post: function(req, res) {
-    var ftppass = path.resolve('.', '.ftppass')
-
+    var ftppass = path.resolve('.', '.ftppass');
+    
     q.nfcall(fs.readFile, ftppass, 'utf8')
     .then(function(result){
       var data = JSON.parse(result);

@@ -6,5 +6,9 @@
   "admin": {
     "username": "admin-username",
     "password": "admin-password"
+  },
+  "slack": {
+    "token": "slack-token",
+    "botId": "slack-botId"
   }
 }

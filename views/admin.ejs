@@ -6,33 +6,96 @@
   <body>
     <%- include partials/header.ejs %>
 
-    <div id="container">
-      <div class="tab3-widget">
-        <table>
-          <thead>
-            <tr>
-              <th>from</th>
-              <th>to</th>
-              <th>value</th>
-              <th>actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% for (var i=0; i<result.length; i++) {%>
-            <tr>
-              <td><%= result[i].from %></td>
-              <td><%= result[i].to %></td>
-              <td><%= result[i].value %></td>
-              <td><a href="/delete/<%= result[i]._id %>">delete</a></td>
-            </tr>
-            <% } %>
-          </tbody>
-        </table>
-      </div>
+    <div id="container" class="admin">
+      <section>
+        <h1>Team</h1>
+        <div class="tab3-widget">
+          <table>
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (var i=0; i<members.length; i++) {%>
+              <tr>
+                <td><%= members[i].username %></td>
+                <td><a class="btn dark" href="/member/delete/<%= members[i]._id %>">Delete</a></td>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
 
-      <div style="text-align: center;">
-        <a href="/delete" class="btn dark">delete all</a>
-      </div>
+        <form action="/member/create" method=POST>
+          <input type="text"
+                 required=""
+                 name="username"
+                 placeholder="Username"
+                 autocomplete="on"
+                 spellcheck="false"
+                 autocorrect="off"
+                 autocapitalize="off"
+                 maxlength="1024">
+          <button type="submit" class="btn dark">Add</button>
+          <a href="/member/delete-all" class="btn dark">Delete all</a>
+        </form>
+      </section>
+
+      <section>
+        <h1>Expenses</h1>
+        <div class="tab3-widget">
+          <table>
+            <thead>
+              <tr>
+                <th>From</th>
+                <th>To</th>
+                <th>Amount</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (var i=0; i<expenses.length; i++) {%>
+              <tr>
+                <td><%= expenses[i].from %></td>
+                <td><%= expenses[i].to %></td>
+                <td><%= expenses[i].value %></td>
+                <td><a href="/expense/delete/<%= expenses[i]._id %>" class="btn dark">Delete</a></td>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+
+        <form action="/expense/create" method=POST>
+          <select name="from" required>
+            <option value="" selected disabled>From?</option>
+            <% for (var i=0; i<members.length; i++) {%>
+            <option value="<%= members[i].username %>"><%= members[i].username %></option>
+            <% } %>
+          </select>
+
+          <select name="to" required>
+            <option value="" selected disabled>To?</option>
+            <% for (var i=0; i<members.length; i++) {%>
+            <option value="<%= members[i].username %>"><%= members[i].username %></option>
+            <% } %>
+          </select>
+
+          <input type="text"
+                 required=""
+                 name="value"
+                 placeholder="Value"
+                 autocomplete="on"
+                 spellcheck="false"
+                 autocorrect="off"
+                 autocapitalize="off"
+                 maxlength="1024">
+          <button type="submit" class="btn dark">Add</button>
+          <a href="/expense/delete-all" class="btn dark">Delete all</a>
+        </form>
+      </section>
     </div>
   </body>
 </html>

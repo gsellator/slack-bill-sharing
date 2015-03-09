@@ -1,9 +1,15 @@
-var expenseModel = require('../models/expense');
+var q = require('q'),
+    expenseModel = require('../models/expense'),
+    memberModel = require('../models/member');
 
 module.exports = {
   get: function(req, res) {
-    expenseModel.getAllExpenses(function(result){
-      res.render('admin.ejs', {result: result});
+    q.all([
+      memberModel.getAll(),
+      expenseModel.getAll()
+    ])
+    .then(function(results){
+      res.render('admin.ejs', {members: results[0], expenses: results[1]});
     });
   }
 }

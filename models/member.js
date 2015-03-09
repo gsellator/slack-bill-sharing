@@ -1,4 +1,5 @@
 var mongoose = require('mongoose'),
+    q = require('q'),
     Schema = mongoose.Schema,
     model = module.exports;
 
@@ -10,32 +11,26 @@ mongoose.model('Member', MemberSchema);
 var MemberModel = mongoose.model('Member');
 
 //CRUD WelcomePack
-model.createMember = function (username, callback) {
-  var newMember = new MemberModel({
-    username: username
-  });
-  newMember.save(function (err, result) {
-    callback(result);
-  });
+model.create = function (member) {
+  return q.ninvoke(MemberModel, 'create', member);
 };
 
-model.getMember = function (username, callback) {
-  MemberModel.findOne({"username": username}, function (err, result) {
-    if (err) { throw err; }
-    callback(result);
-  });
+model.get = function (username) {
+  return q.ninvoke(MemberModel, 'findOne', {"username": username});
 };
 
-model.getMembers = function (callback) {
-  MemberModel.find({}, function (err, result) {
-    if (err) { throw err; }
-    callback(result);
-  });
+model.getAll = function () {
+  return q.ninvoke(MemberModel, 'find', {});
 };
 
-model.deleteMember = function (username, callback) {
-  MemberModel.remove({username: username}, function (err, result) {
-    if (err) { throw err; }
-    callback(result);
-  });
+model.remove = function (_id) {
+  return q.ninvoke(MemberModel, 'remove', {"_id": _id});
+};
+
+model.removeByUsername = function (username) {
+  return q.ninvoke(MemberModel, 'remove', {"username": username});
+};
+
+model.removeAll = function (_id) {
+  return q.ninvoke(MemberModel, 'remove', {});
 };

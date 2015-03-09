@@ -1,4 +1,4 @@
-form{
+form.login{
   margin: 20px auto 20px auto;
   max-width: 600px;
   background: $dark-grey;
@@ -26,106 +26,106 @@ form{
 
     .row{
       display: table-row;
-
-      .label{
-        display: table-cell;
-        width: 100px;
-        color: $grey-4;
-        text-align: right;
-        padding: 0 8px 6px 0;
-        vertical-align: bottom;
-        label{font-weight: 100;}
-      }
-
-      .field{
-        display: table-cell;
-        border-bottom: solid $grey-6 1px;
-
-        input{
-          text-align: left;
-          margin: 6px 0 0 0;
-          padding: 8px 8px 0 4px;
-          width: 100%; height: 40px;
-          font-size: 19px;
-          color: white;
-          background: transparent;
-          border: none;
-
-          &:focus {
-            outline: 0;
-            border: none;
-          }
-        }
-
-        select {
-          margin: 7px 0 0 0;
-          width: 100%; height: 40px;
-          font-size: 19px;
-          color: white;
-          background: transparent;
-          border: none;
-
-          option{color: $dark-grey; background-color: white;}
-
-          &:focus {
-            outline: solid $medium-grey 1px;;
-          }
-        }
-      }
     }
   }
+}
 
-  .rdio{
-    display: inline-block;
-    position: relative;
-    width: 49%; height: 40px;
-    line-height: 36px;
-    text-align: left;
-    padding: 0 8px;
-    border: solid rgb(206, 214, 218) 1px;
-    border-radius: 4px;
-    &:not(:last-child){margin-right: 2%;}
+.label{
+  display: table-cell;
+  width: 100px;
+  color: $grey-4;
+  text-align: right;
+  padding: 0 8px 6px 0;
+  vertical-align: bottom;
+  label{font-weight: 100;}
+}
 
-    input[type="radio"]:checked,
-    input[type="radio"]:not(:checked) {
-      width: initial;
-      height: initial;
-    }
+.field{
+  display: table-cell;
+  border-bottom: solid $grey-6 1px;
+}
 
-    label{
-      cursor: pointer;
-      position: absolute;
-      left: 30px; right: 0;
-      height: 40px;
-      display: inline-block;
-      color: #d9dadb;
-    }
+input{
+  text-align: left;
+  margin: 6px 0 0 0;
+  padding: 8px 8px 0 4px;
+  width: 100%; height: 40px;
+  font-size: 19px;
+  color: white;
+  background: transparent;
+  border: none;
+
+  &:focus {
+    outline: 0;
+    border: none;
+  }
+}
+
+select {
+  margin: 7px 0 0 0;
+  width: 100%; height: 40px;
+  font-size: 19px;
+  color: white;
+  background: transparent;
+  border: none;
+
+  option{color: $dark-grey; background-color: white;}
+
+  &:focus {
+    outline: solid $medium-grey 1px;;
+  }
+}
+
+.rdio{
+  display: inline-block;
+  position: relative;
+  width: 49%; height: 40px;
+  line-height: 36px;
+  text-align: left;
+  padding: 0 8px;
+  border: solid rgb(206, 214, 218) 1px;
+  border-radius: 4px;
+  &:not(:last-child){margin-right: 2%;}
+
+  input[type="radio"]:checked,
+  input[type="radio"]:not(:checked) {
+    width: initial;
+    height: initial;
   }
 
-  .chck{
-    position: relative;
+  label{
+    cursor: pointer;
+    position: absolute;
+    left: 30px; right: 0;
     height: 40px;
-    line-height: 36px;
-    text-align: left;
-    padding: 0 8px;
-    border: solid rgb(206, 214, 218) 1px;
-    border-radius: 4px;
-
-    label{
-      cursor: pointer;
-      position: absolute;
-      left: 30px;
-      right: 0;
-      color: #d9dadb;
-    }
+    display: inline-block;
+    color: #d9dadb;
   }
+}
 
-  .link{
-    color: $grey-4;
-    font-size: 17px;
+.chck{
+  position: relative;
+  height: 40px;
+  line-height: 36px;
+  text-align: left;
+  padding: 0 8px;
+  border: solid rgb(206, 214, 218) 1px;
+  border-radius: 4px;
 
-    &:hover, &:active{
-      color: white;
-    }
+  label{
+    cursor: pointer;
+    position: absolute;
+    left: 30px;
+    right: 0;
+    color: #d9dadb;
+  }
+}
+
+.link{
+  color: $grey-4;
+  font-size: 17px;
+
+  &:hover, &:active{
+    color: white;
   }
 }

@@ -98,6 +98,7 @@ module.exports = function(grunt) {
         files: [
           {src: [
             '.bowerrc',
+            '.ftppass',
             'app.js',
             'bower.json',
             'config/**',
