@@ -1,14 +1,15 @@
 {
+  "slack": {
+    "token": "slack-token",
+    "botId": "slack-botId",
+    "currency": "€"
+  },
+  "admin": {
+    "username": "admin",
+    "password": "password"
+  },
   "prod": {
     "username": "prod-server-username",
     "password": "prod-server-password"
-  },
-  "admin": {
-    "username": "admin-username",
-    "password": "admin-password"
-  },
-  "slack": {
-    "token": "slack-token",
-    "botId": "slack-botId"
   }
 }
