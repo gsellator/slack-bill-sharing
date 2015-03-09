@@ -60,7 +60,7 @@
               <tr>
                 <td><%= expenses[i].from %></td>
                 <td><%= expenses[i].to %></td>
-                <td><%= expenses[i].value %></td>
+                <td><%= expenses[i].value.toFixed(2) %></td>
                 <td><a href="/expense/delete/<%= expenses[i]._id %>" class="btn dark">Delete</a></td>
               </tr>
               <% } %>
