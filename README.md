@@ -17,6 +17,6 @@ Slack-bill-sharing is a bill sharing bot for slack.
 #### Slack-bill-sharing functionalities
 
 - Start by adding users with `@botName add username`
-- At anytime, you can consult the users list with `@botName team` and remove a user with `@botName remove username`
+- At anytime, you can consult the list of users with `@botName team` and remove a user with `@botName remove username`
 - Add expenses by using one of the following commands `@botName adrien paid 10` or `@botName john paid 35 to sandy roger`.
 - Check balances with the command `@botName report`
