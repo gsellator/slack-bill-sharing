@@ -87,6 +87,8 @@ var addExpense = function(cmd, channel, currency){
     results.forEach(function(elt, i) {
       if (elt === null)
         throw new Error("Oink oink, " + toArray[i] + " is not a member of your team. Add him with the command \"add " + toArray[i] + "\".");
+      if (elt.username === from)
+        throw new Error("Oink oink, beware! A user cannot owe money to himself!");
     });
     return expenseModel.createFromArray(query);
   })
