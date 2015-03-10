@@ -1,5 +1,4 @@
 var path = require('path'),
-    fs = require('fs'),
     bcrypt = require('bcrypt'),
     q = require('q'),
     memberModel = require('../models/member'),

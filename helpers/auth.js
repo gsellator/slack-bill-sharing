@@ -28,6 +28,8 @@ module.exports = {
       return q.nfcall(bcrypt.compare, data.admin.password, cookies.access_token);
     })
     .then(function(result){
+      if (!result)
+        throw new Error("Wrong username or password");
       next();
     })
     .then(undefined, function(err){
