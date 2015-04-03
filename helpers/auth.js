@@ -35,7 +35,7 @@ module.exports = {
     .then(undefined, function(err){
       console.log(err.stack);
       res.writeHead(302, {
-        'Set-Cookie': 'access_token=""',
+        'Set-Cookie': 'access_token=',
         'Content-Type': 'text/plain',
         'Location': '/login'
       });
