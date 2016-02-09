@@ -100,7 +100,7 @@ slack.login();
 
 app.use(function(req, res, next){ res.redirect('/login');} );
 
-server.set('port', (process.env.PORT || 3000));
-server.listen(server.get('port'), function() {
-  console.log('Node app is running on port', server.get('port'));
+app.set('port', (process.env.PORT || 3000));
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
 });
