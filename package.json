@@ -21,7 +21,8 @@
     "url": "http://github.com/gsellator/slack-bill-sharing/issues"
   },
   "scripts": {
-    "postinstall": "bower install"
+    "start": "node index.js",
+    "dev": "DEBUG=hub node index"
   },
   "dependencies": {
     "bcrypt": "^0.8.5",
