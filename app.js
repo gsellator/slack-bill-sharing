@@ -100,4 +100,8 @@ slack.on('error', function(error) {
 slack.login();
 
 app.use(function(req, res, next){ res.redirect('/login');} );
-console.log('app running on port ' + config.port);
+
+server.set('port', (process.env.PORT || 3000));
+server.listen(server.get('port'), function() {
+  console.log('Node app is running on port', server.get('port'));
+});
