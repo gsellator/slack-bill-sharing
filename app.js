@@ -16,8 +16,7 @@ var express = require('express'),
     fs = require('fs'),
     q = require('q');
 
-var app = express(),
-    server = app.listen(config.port);
+var app = express();
 
 var bddUri = 'mongodb://' + process.env.DB_USER + ':' +  process.env.DB_PASS + '@' + config.bddUri;
 mongoose.connect(bddUri, function (err, res) {
