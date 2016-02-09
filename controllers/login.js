@@ -5,22 +5,14 @@ var path = require('path'),
 
 module.exports = {
   get: function(req, res) {
-    if (req.param('error')==1) {
-      res.render('login.ejs');
-    } else {
-      res.render('login.ejs');
-    }
+    res.render('login.ejs');
   },
 
   post: function(req, res) {
-    var ftppass = path.resolve('.', '.ftppass');
-
-    q.nfcall(fs.readFile, ftppass, 'utf8')
-    .then(function(result){
-      var data = JSON.parse(result);
-      if (req.body.username != data.admin.username || req.body.password != data.admin.password)
+    q.fcall(function () {
+      if (req.body.username != process.env.ADMIN_USER || req.body.password != process.env.ADMIN_PASS)
         throw new Error("bad username or password");
-      return q.nfcall(bcrypt.hash, data.admin.password, 8);
+      return q.nfcall(bcrypt.hash, process.env.ADMIN_PASS, 8);
     })
     .then(function(hash){
       res.writeHead(302, {

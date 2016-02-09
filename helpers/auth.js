@@ -15,17 +15,12 @@ var parseCookies = function(request) {
 
 module.exports = {
   private: function(req, res, next) {
-    var ftppass = path.resolve('.', '.ftppass'),
-        cookies = parseCookies(req);
+    var cookies = parseCookies(req);
 
     q.fcall(function () {
       if (cookies == undefined && cookies.access_token == undefined)
         throw new Error("No cookie available");
-      return q.nfcall(fs.readFile, ftppass, 'utf8')
-    })
-    .then(function(result){
-      var data = JSON.parse(result);
-      return q.nfcall(bcrypt.compare, data.admin.password, cookies.access_token);
+      return q.nfcall(bcrypt.compare, process.env.ADMIN_PASS, cookies.access_token);
     })
     .then(function(result){
       if (!result)

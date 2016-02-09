@@ -47,19 +47,6 @@ module.exports = function(grunt) {
           },
           watch: ['app.js', 'config', 'controllers', 'helpers', 'models'],
           delay: 300,
-
-          callback: function (nodemon) {
-            // Log nodemon actions
-            nodemon.on('log', function (event) {console.log(event.colour);});
-
-            // Open the application in a new browser window and is optional
-            //            nodemon.on('config:update', function () {setTimeout(function() {require('open')('http://localhost:3090', 'Google Chrome Canary');}, 1000);});
-
-            // Update .rebooted to fire Live-Reload
-            nodemon.on('restart', function () {setTimeout(function() {
-              require('fs').writeFileSync('.rebooted', 'rebooted');
-            }, 1000);});
-          }
         }
       }
     },
@@ -98,7 +85,6 @@ module.exports = function(grunt) {
         files: [
           {src: [
             '.bowerrc',
-            '.ftppass',
             'app.js',
             'bower.json',
             'config/**',
@@ -141,7 +127,7 @@ module.exports = function(grunt) {
 
   // Dev tasks
   grunt.loadNpmTasks("grunt-concurrent");
-  grunt.loadNpmTasks('grunt-sass');
+  grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-nodemon');
   grunt.loadNpmTasks('grunt-contrib-watch');
 

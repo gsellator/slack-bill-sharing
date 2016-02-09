@@ -1,5 +1,4 @@
 var path = require('path'),
-    bcrypt = require('bcrypt'),
     q = require('q'),
     memberModel = require('../models/member'),
     expenseModel = require('../models/expense');

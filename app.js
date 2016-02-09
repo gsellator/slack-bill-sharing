@@ -1,5 +1,4 @@
 var config = require('./config/config'),
-    bddUri = config.bddUri,
     auth = require('./helpers/auth'),
     billSharing = require('./helpers/billSharing'),
     expense = require('./helpers/expense'),
@@ -20,6 +19,7 @@ var express = require('express'),
 var app = express(),
     server = app.listen(config.port);
 
+var bddUri = 'mongodb://' + process.env.DB_USER + ':' +  process.env.DB_PASS + '@' + config.bddUri;
 mongoose.connect(bddUri, function (err, res) {
   if (err) {console.log ('Mongo error:' + bddUri + '. ' + err);}
   else {console.log ('Mongo success: ' + bddUri);}
@@ -49,62 +49,55 @@ app.get('/expense/delete/:id', auth.private, expense.delete);
 app.post('/expense/create', auth.private, expense.create);
 
 // Slack app
-var ftppass = path.resolve('.', '.ftppass');
+var token = process.env.SLACK_TOKEN,
+    botId = process.env.SLACK_BOT,
+    currency = process.env.SLACK_CURRENCY || '€',
+    autoReconnect = true,
+    autoMark = true;
 
-q.nfcall(fs.readFile, ftppass, 'utf8')
-.then(function(result){
-  
-  var data = JSON.parse(result),
-      token = data.slack.token,
-      botId = data.slack.botId,
-      currency = data.slack.currency,
-      autoReconnect = true,
-      autoMark = true;
+var slack = new Slack(token, autoReconnect, autoMark);
 
-  var slack = new Slack(token, autoReconnect, autoMark);
+slack.on('open', function() {
+  var channels = [],
+      groups = [],
+      unreads = slack.getUnreadCount(),
+      key;
 
-  slack.on('open', function() {
-    var channels = [],
-        groups = [],
-        unreads = slack.getUnreadCount(),
-        key;
-
-    for (key in slack.channels) {
-      if (slack.channels[key].is_member) {
-        channels.push('#' + slack.channels[key].name);
-      }
+  for (key in slack.channels) {
+    if (slack.channels[key].is_member) {
+      channels.push('#' + slack.channels[key].name);
     }
+  }
 
-    for (key in slack.groups) {
-      if (slack.groups[key].is_open && !slack.groups[key].is_archived) {
-        groups.push(slack.groups[key].name);
-      }
+  for (key in slack.groups) {
+    if (slack.groups[key].is_open && !slack.groups[key].is_archived) {
+      groups.push(slack.groups[key].name);
     }
+  }
 
-    console.log('Welcome to Slack. You are @%s of %s', slack.self.name, slack.team.name);
-  });
+  console.log('Welcome to Slack. You are @%s of %s', slack.self.name, slack.team.name);
+});
 
-  slack.on('message', function(message) {
-    var type = message.type,
-        channel = slack.getChannelGroupOrDMByID(message.channel),
-        user = slack.getUserByID(message.user),
-        time = message.ts,
-        text = message.text,
-        response = '';
+slack.on('message', function(message) {
+  var type = message.type,
+      channel = slack.getChannelGroupOrDMByID(message.channel),
+      user = slack.getUserByID(message.user),
+      time = message.ts,
+      text = message.text,
+      response = '';
 
-    console.log('Received: %s %s @%s %s "%s"', type, (channel.is_channel ? '#' : '') + channel.name, user.name, time, text);
+  console.log('Received: %s %s @%s %s "%s"', type, (channel.is_channel ? '#' : '') + channel.name, user.name, time, text);
 
-    if (type === 'message') {
-      billSharing.manageMsg(text, botId, channel, currency);
-    }
-  });
+  if (type === 'message') {
+    billSharing.manageMsg(text, botId, channel, currency);
+  }
+});
 
-  slack.on('error', function(error) {
-    console.error('Error: %s', error);
-  });
+slack.on('error', function(error) {
+  console.error('Error: %s', error);
+});
 
-  slack.login();
-})
+slack.login();
 
 app.use(function(req, res, next){ res.redirect('/login');} );
 console.log('app running on port ' + config.port);

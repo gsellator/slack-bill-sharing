@@ -9,10 +9,10 @@ Slack-bill-sharing is a bill sharing bot for slack.
 #### Creating a new bot
 
 - Create a bot on [slack's website](https://my.slack.com/services/new/bot)
-- Change the name of the `.ftppass-` file into `.ftppass` and fill it with your own token and bot name
 - Install the project dependencies with `npm install`
 - Run the project locally with the `grunt` command
 - Your bot should now be connected and an admin page should be available at the address : `http://localhost:3220/admin`
+- Register the following env vars : DB_USER, DB_PASS, ADMIN_USER, ADMIN_PASS, SLACK_TOKEN, SLACK_BOT, SLACK_CURRENCY
 
 #### Slack-bill-sharing functionalities
 
