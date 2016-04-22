@@ -1,20 +1,26 @@
-var config = require('./config/config'),
-    auth = require('./helpers/auth'),
-    billSharing = require('./helpers/billSharing'),
-    expense = require('./helpers/expense'),
-    initializer = require('./helpers/initializer'),
-    member = require('./helpers/member'),
-    adminCtrl = require('./controllers/admin'),
-    loginCtrl = require('./controllers/login');
+import path from "path";
+import express from "express";
+import compression from "compression";
+import bodyParser from "body-parser";
+//import cookieParser from "cookie-parser";
+//import favicon from "serve-favicon";
+//import morgan from "morgan";
+import mongoose from "mongoose";
+import Slack from "Slack";
+import fs from "fs";
+import q from "q";
+import config from "./config/config";
 
-var express = require('express'),
-    bodyParser = require('body-parser'),
-    compression = require('compression'),
-    path = require('path'),
-    mongoose = require('mongoose'),
-    Slack = require('slack-client'),
-    fs = require('fs'),
-    q = require('q');
+import AppsCtrl from "./controllers/AppsCtrl";
+import auth from "./helpers/auth";
+import billSharing from "./helpers/billSharing";
+import expense from "./helpers/expense";
+import initializer from "./helpers/initializer";
+import member from "./helpers/member";
+import adminCtrl from "./controllers/admin";
+import loginCtrl from "./controllers/login";
+
+const debug = require("debug")("bot");
 
 var app = express();
 
