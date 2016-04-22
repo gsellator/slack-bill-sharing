@@ -1,20 +1,17 @@
-var path = require('path'),
-    fs = require('fs'),
-    bcrypt = require('bcrypt'),
-    q = require('q');
+import bcrypt from "bcrypt-as-promised";
 
-module.exports = {
-  get: function(req, res) {
+const LoginCtrl = {
+  get: (req, res) => {
     res.render('login.ejs');
   },
 
-  post: function(req, res) {
-    q.fcall(function () {
+  post: (req, res) => {
+    new Promise((resolve, reject) => {
       if (req.body.username != process.env.ADMIN_USER || req.body.password != process.env.ADMIN_PASS)
-        throw new Error("bad username or password");
-      return q.nfcall(bcrypt.hash, process.env.ADMIN_PASS, 8);
+        return reject(new Error("bad username or password"));
+      return resolve(bcrypt.hash(process.env.ADMIN_PASS, 8));
     })
-    .then(function(hash){
+    .then((hash) => {
       res.writeHead(302, {
         'Set-Cookie': 'access_token=' + hash,
         'Content-Type': 'text/plain',
@@ -22,9 +19,11 @@ module.exports = {
       });
       res.end();
     })
-    .then(undefined, function(err){
+    .then(undefined, (err) => {
       console.log(err.message);
       res.redirect('/login?error=1');
     });
   }
 };
+
+export default LoginCtrl;

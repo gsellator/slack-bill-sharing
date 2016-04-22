@@ -1,23 +1,22 @@
-var path = require('path'),
-    q = require('q'),
-    memberModel = require('../models/member'),
-    expenseModel = require('../models/expense');
+import q from "q";
+import MemberModel from "../models/MemberModel";
+import ExpenseModel from "../models/ExpenseModel";
 
-var sendResponse = function(response, channel){
-  return q.fcall(function(){
+let sendResponse = (response, channel) => {
+  return q.fcall(() => {
     channel.send(response);
     console.log(response);
     return;
   });
 }
 
-var getTotal = function(name1, name2, channel, currency){
-  q.all([
-    expenseModel.getSum(name1, name2),
-    expenseModel.getSum(name2, name1)
+let getTotal = (name1, name2, channel, currency) => {
+  Promise.all([
+    ExpenseModel.getSum(name1, name2),
+    ExpenseModel.getSum(name2, name1)
   ])
-  .then(function(results){
-    var total = results[0] - results[1];
+  .then((results) => {
+    let total = results[0] - results[1];
     if (total.toFixed(2) != "0.00"){
       if (total < 0)
         return sendResponse(name1 + " owes " + name2 + " " + -total.toFixed(2) + currency, channel);
@@ -27,15 +26,15 @@ var getTotal = function(name1, name2, channel, currency){
   });
 };
 
-var addExpense = function(cmd, channel, currency){
-  var from,
+let addExpense = (cmd, channel, currency) => {
+  let from,
       toArray = [],
       value = 0,
       recipients = 0,
       query = [];
 
-  return memberModel.getAll()
-  .then(function(team){
+  return MemberModel.getAll()
+  .then((team) =>   {
     if (team == null)
       throw new Error("Oink oink, it seems your team is empty... Add someone by asking me \"add bob\".");
 
@@ -50,7 +49,7 @@ var addExpense = function(cmd, channel, currency){
       recipients = toArray.length;
     } else {
       value = parseFloat(cmd.replace('$', '').replace('€', '').replace(' ', ''));
-      team.forEach(function(elt) {
+      team.forEach((elt) => {
         if (from != elt.username)
           toArray[toArray.length] = elt.username;
       });
@@ -61,7 +60,7 @@ var addExpense = function(cmd, channel, currency){
       throw new Error("Oink oink, well... I think you made a mistake in your message...");
 
     value = value / recipients;
-    toArray.forEach(function(elt, i) {
+    toArray.forEach((elt, i) => {
       query[query.length] = {
         from: from,
         to: elt,
@@ -69,68 +68,68 @@ var addExpense = function(cmd, channel, currency){
       }
     });
 
-    return memberModel.get(from)
+    return MemberModel.get(from)
   })
-  .then(function(result){
+  .then((result) => {
     if (result == null)
       throw new Error("Oink oink, " + from + " is not a member of your team. Add him with the command \"add " + from + "\".");
 
-    var arrayOfPromises = [];
-    for(var i=0; i<toArray.length; i++){
-      arrayOfPromises[arrayOfPromises.length] = memberModel.get(toArray[i])
+    let arrayOfPromises = [];
+    for(let i=0; i<toArray.length; i++){
+      arrayOfPromises[arrayOfPromises.length] = MemberModel.get(toArray[i])
     }
-    return q.all(arrayOfPromises)
+    return Promise.all(arrayOfPromises)
   })
-  .then(function(results){
-    results.forEach(function(elt, i) {
+  .then((results) => {
+    results.forEach((elt, i) => {
       if (elt === null)
         throw new Error("Oink oink, " + toArray[i] + " is not a member of your team. Add him with the command \"add " + toArray[i] + "\".");
       if (elt.username === from)
         throw new Error("Oink oink, beware! A user cannot owe money to himself!");
     });
-    return expenseModel.createFromArray(query);
+    return ExpenseModel.createFromArray(query);
   })
-  .then(function(){
+  .then(() => {
     return showDigest(channel, currency)
   })
 };
 
-var addMember = function(cmd, channel){
+let addMember = (cmd, channel) => {
   cmd = cmd.replace(' add ', '').replace(' ', '');
-  return memberModel.get(cmd)
-  .then(function(result){
+  return MemberModel.get(cmd)
+  .then((result) => {
     if (result != null)
       throw new Error("Oink oink, " + cmd + " is already a member of your team.");
-    return memberModel.create({username: cmd});
+    return MemberModel.create({username: cmd});
   })
-  .then(function(){
+  .then(() => {
     return sendResponse("Oink oink, got it! I added " + cmd + " to your team!", channel);
   });
 };
 
-var removeMember = function(cmd, channel){
+let removeMember = (cmd, channel) => {
   cmd = cmd.replace(' remove ', '').replace(' ', '');
 
 
-  return memberModel.get(cmd)
-  .then(function(result){
+  return MemberModel.get(cmd)
+  .then((result) => {
     if (result === null)
       throw new Error("Oink oink, I couldn't find any " + cmd + " in your team.");
-    return memberModel.removeByUsername(cmd)
+    return MemberModel.removeByUsername(cmd)
   })
-  .then(function(){
+  .then(() => {
     sendResponse("Oink oink, got it! I removed " + cmd + " from your team!", channel);
   });
 };
 
-var showTeam = function(channel){
-  return memberModel.getAll()
-  .then(function(result){
+let showTeam = (channel) => {
+  return MemberModel.getAll()
+  .then((result) => {
     if (result === null)
       throw new Error("Oink oink, it seems your team is empty... Add someone by asking \"add bob\".");
 
-    var team = "";
-    for (var i=0; i<result.length; i++){
+    let team = "";
+    for (let i=0; i<result.length; i++){
       team += result[i].username;
       if (i < result.length-2)
         team += ", ";
@@ -144,24 +143,24 @@ var showTeam = function(channel){
   });
 };
 
-var showDigest = function(channel, currency){
-  var tmpArray = [];
+let showDigest = (channel, currency) => {
+  let tmpArray = [];
 
   return sendResponse("Oink oink, here is your report:", channel)
-  .then(function(){
-    return memberModel.getAll()
+  .then(() => {
+    return MemberModel.getAll()
   })
-  .then(function(team){
-    var done = q.defer();
+  .then((team) => {
+    let done = q.defer();
 
-    for(var i=0; i<team.length; i++){
-      for(var j=i+1; j<team.length; j++){
+    for(let i=0; i<team.length; i++){
+      for(let j=i+1; j<team.length; j++){
         tmpArray[tmpArray.length] = [team[i].username, team[j].username];
       }
     }
-    for(var i=0; i<tmpArray.length; i++){
-      var name1 = tmpArray[i][0];
-      var name2 = tmpArray[i][1];
+    for(let i=0; i<tmpArray.length; i++){
+      let name1 = tmpArray[i][0];
+      let name2 = tmpArray[i][1];
       getTotal(name1, name2, channel, currency);
       if (i == tmpArray.length-1) {done.resolve()}
     }
@@ -169,13 +168,13 @@ var showDigest = function(channel, currency){
   })
 };
 
-module.exports = {
-  manageMsg :function(text, botId, channel, currency){
+const BillSharingCtrl = {
+  manageMsg :(text, botId, channel, currency) => {
     if (text.indexOf(botId) == 0){
       q.fcall(function () {
         return text.replace(botId + ':', '').replace(botId, '').toLowerCase();
       })
-      .then(function(cmd){
+      .then((cmd) => {
         if (cmd.indexOf(' paid ') != -1)
           return addExpense(cmd, channel, currency);
         if (cmd.indexOf(' add ') == 0)
@@ -188,9 +187,11 @@ module.exports = {
           return showDigest(channel, currency);
         throw new Error("Oink oink, I did't get what you just said...");
       })
-      .then(undefined, function(err){
+      .then(undefined, (err) => {
         sendResponse(err.message, channel);
       });
     }
   }
 };
+
+export default BillSharingCtrl;
