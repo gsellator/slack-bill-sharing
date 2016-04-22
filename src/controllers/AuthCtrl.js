@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt-as-promised";
+//import bcrypt from "bcrypt-as-promised";
 
 let parseCookies = (request) => {
   let list = {},
@@ -17,7 +17,8 @@ const AuthCtrl = {
     new Promise((resolve, reject) => {
       if (cookies == undefined && cookies.access_token == undefined)
         return reject(new Error("No cookie available"));
-      return resolve(bcrypt.compare(process.env.ADMIN_PASS, cookies.access_token));
+      return resolve(process.env.ADMIN_PASS === cookies.access_token);
+//      return resolve(bcrypt.compare(process.env.ADMIN_PASS, cookies.access_token));
     })
     .then((result) => {
       if (!result)

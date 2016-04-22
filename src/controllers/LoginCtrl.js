@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt-as-promised";
+//import bcrypt from "bcrypt-as-promised";
 
 const LoginCtrl = {
   get: (req, res) => {
@@ -9,7 +9,8 @@ const LoginCtrl = {
     new Promise((resolve, reject) => {
       if (req.body.username != process.env.ADMIN_USER || req.body.password != process.env.ADMIN_PASS)
         return reject(new Error("bad username or password"));
-      return resolve(bcrypt.hash(process.env.ADMIN_PASS, 8));
+//      return resolve(bcrypt.hash(process.env.ADMIN_PASS, 8));
+      return resolve(process.env.ADMIN_PASS);
     })
     .then((hash) => {
       res.writeHead(302, {
