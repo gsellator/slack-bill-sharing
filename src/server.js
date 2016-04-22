@@ -9,9 +9,8 @@ import mongoose from "mongoose";
 import Slack from "slack-client";
 import fs from "fs";
 import q from "q";
-import config from "./config/config";
+import config from "./config";
 
-import AppsCtrl from "./controllers/AppsCtrl";
 import auth from "./helpers/auth";
 import billSharing from "./helpers/billSharing";
 import expense from "./helpers/expense";
