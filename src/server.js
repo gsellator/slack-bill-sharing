@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 //import favicon from "serve-favicon";
 //import morgan from "morgan";
 import mongoose from "mongoose";
-import Slack from "Slack";
+import Slack from "slack-client";
 import fs from "fs";
 import q from "q";
 import config from "./config/config";
