@@ -19,11 +19,33 @@ let getTotal = (name1, name2, channel, currency) => {
     let total = results[0] - results[1];
     if (total.toFixed(2) != "0.00"){
       if (total < 0)
-        return sendResponse(name1 + " owes " + name2 + " " + -total.toFixed(2) + currency, channel);
+           return sendResponse(name1 + " owes " + name2 + " " + -total.toFixed(2) + currency, channel);
       else if (total > 0)
-        return sendResponse(name2 + " owes " + name1 + " " + total.toFixed(2) + currency, channel);
+          return sendResponse(name2 + " owes " + name1 + " " + total.toFixed(2) + currency, channel);
     }
   });
+};
+
+function getDebt(name1, name2){
+  
+  var test;
+  
+  Promise.all([
+    ExpenseModel.getSum(name1, name2),
+    ExpenseModel.getSum(name2, name1)
+  ])
+  .then((results) => {
+    let total = results[0] - results[1];
+    if (total.toFixed(2) != "0.00"){
+      if (total < 0)
+          return 'test1';//test = -total.toFixed(2);
+      else if (total > 0)
+          return 'test2';//test = total.toFixed(2);
+      //return test;
+    }
+    return 'test3';
+  });
+  //console.log(test);
 };
 
 let addExpense = (cmd, channel, currency) => {
@@ -143,28 +165,31 @@ let showTeam = (channel) => {
   });
 };
 
-let showDigest = (channel, currency) => {
+let showNewDigest = (channel, currency) => {
   let tmpArray = [];
-
-  return sendResponse("Oink oink, here is your report:", channel)
+  var test;
+  
+  return sendResponse("Oink oink, to even things out:", channel)
   .then(() => {
     return MemberModel.getAll()
   })
   .then((team) => {
-    let done = q.defer();
-
+    //let done = q.defer();
+    
+    let arrayOfPromises = [];
+      
     for(let i=0; i<team.length; i++){
       for(let j=i+1; j<team.length; j++){
         tmpArray[tmpArray.length] = [team[i].username, team[j].username];
+        arrayOfPromises[arrayOfPromises.lenght] = getDebt(team[i].username, team[j].username);
+        console.log(arrayOfPromises[0]);
       }
     }
-    for(let i=0; i<tmpArray.length; i++){
-      let name1 = tmpArray[i][0];
-      let name2 = tmpArray[i][1];
-      getTotal(name1, name2, channel, currency);
-      if (i == tmpArray.length-1) {done.resolve()}
-    }
-    return done.promise;
+    
+    return Promise.all(arrayOfPromises);
+  })
+  .then((data) =>{
+    console.log(data);
   })
 };
 
@@ -185,6 +210,8 @@ const BillSharingCtrl = {
           return showTeam(channel);
         if (cmd.indexOf(' report') == 0)
           return showDigest(channel, currency);
+        if (cmd.indexOf(' rapport') == 0)
+          return showNewDigest(channel, currency);
         throw new Error("Oink oink, I did't get what you just said...");
       })
       .then(undefined, (err) => {

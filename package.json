@@ -21,7 +21,8 @@
   },
   "scripts": {
     "start": "node index.js",
-    "dev": "DEBUG=bot node index"
+    "dev": "DEBUG=bot node index",
+    "altdev": "node index"
   },
   "dependencies": {
     "babel": "^6.3.26",
