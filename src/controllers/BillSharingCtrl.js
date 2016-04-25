@@ -27,10 +27,9 @@ let getTotal = (name1, name2, channel, currency) => {
 };
 
 function getDebt(name1, name2){
+  let test;
   
-  var test;
-  
-  Promise.all([
+  return Promise.all([
     ExpenseModel.getSum(name1, name2),
     ExpenseModel.getSum(name2, name1)
   ])
@@ -38,14 +37,11 @@ function getDebt(name1, name2){
     let total = results[0] - results[1];
     if (total.toFixed(2) != "0.00"){
       if (total < 0)
-          return 'test1';//test = -total.toFixed(2);
+        return -total;
       else if (total > 0)
-          return 'test2';//test = total.toFixed(2);
-      //return test;
+        return total;
     }
-    return 'test3';
   });
-  //console.log(test);
 };
 
 let addExpense = (cmd, channel, currency) => {
@@ -181,11 +177,9 @@ let showNewDigest = (channel, currency) => {
     for(let i=0; i<team.length; i++){
       for(let j=i+1; j<team.length; j++){
         tmpArray[tmpArray.length] = [team[i].username, team[j].username];
-        arrayOfPromises[arrayOfPromises.lenght] = getDebt(team[i].username, team[j].username);
-        console.log(arrayOfPromises[0]);
+        arrayOfPromises[arrayOfPromises.length] = getDebt(team[i].username, team[j].username);
       }
     }
-    
     return Promise.all(arrayOfPromises);
   })
   .then((data) =>{

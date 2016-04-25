@@ -40,5 +40,8 @@
     "q": "^1.4.1",
     "serve-favicon": "^2.3.0",
     "slack-client": "^1.5.1"
+  },
+  "optionalDependencies": {
+    "pm2": "^0.15.10"
   }
 }
