@@ -2,6 +2,10 @@ import q from "q";
 import MemberModel from "../models/MemberModel";
 import ExpenseModel from "../models/ExpenseModel";
 
+function isInArray(value, array) {
+  return array.indexOf(value) > -1;
+}
+
 let sendResponse = (response, channel) => {
   return q.fcall(() => {
     channel.send(response);
@@ -35,12 +39,7 @@ function getDebt(name1, name2){
   ])
   .then((results) => {
     let total = results[0] - results[1];
-    if (total.toFixed(2) != "0.00"){
-      if (total < 0)
-        return -total;
-      else if (total > 0)
-        return total;
-    }
+    return total;
   });
 };
 
@@ -108,7 +107,7 @@ let addExpense = (cmd, channel, currency) => {
     return ExpenseModel.createFromArray(query);
   })
   .then(() => {
-    return showDigest(channel, currency)
+    return showNewDigest(channel, currency)
   })
 };
 
@@ -161,19 +160,48 @@ let showTeam = (channel) => {
   });
 };
 
-let showNewDigest = (channel, currency) => {
+let showDigest = (channel, currency) => {
   let tmpArray = [];
-  var test;
+
+  return sendResponse("Oink oink, here is your report:", channel)
+  .then(() => {
+    return MemberModel.getAll()
+  })
+  .then((team) => {
+    let done = q.defer();
+
+    for(let i=0; i<team.length; i++){
+      for(let j=i+1; j<team.length; j++){
+        tmpArray[tmpArray.length] = [team[i].username, team[j].username];
+      }
+    }
+    for(let i=0; i<tmpArray.length; i++){
+      let name1 = tmpArray[i][0];
+      let name2 = tmpArray[i][1];
+      getTotal(name1, name2, channel, currency);
+      if (i == tmpArray.length-1) {done.resolve()}
+    }
+    return done.promise;
+  })
+};
+
+let showNewDigest = (channel, currency) => {
+  //Tableau des dettes (X to Y : +/-Z€)
+  let tmpArray = [];
+  
+  //Tableau des dettes agrégées
+  let debtArray = [];
   
   return sendResponse("Oink oink, to even things out:", channel)
   .then(() => {
     return MemberModel.getAll()
   })
   .then((team) => {
-    //let done = q.defer();
-    
+
+    //Tableau des dettes X à Y
     let arrayOfPromises = [];
       
+    //On récupère les noms et on prépare le tableau de dettes (X to Y : +/-Z€)
     for(let i=0; i<team.length; i++){
       for(let j=i+1; j<team.length; j++){
         tmpArray[tmpArray.length] = [team[i].username, team[j].username];
@@ -183,7 +211,86 @@ let showNewDigest = (channel, currency) => {
     return Promise.all(arrayOfPromises);
   })
   .then((data) =>{
-    console.log(data);
+    
+    //On remplit la dernière colonne du tableau de dettes (+/-Z€)
+    for(let i=0; i<tmpArray.length; i++)
+      tmpArray[i][2] = data[i];
+    
+    //On prépare le tableau des soldes (en fait on récupère chaque noms uniques)
+    for(let i=0; i<tmpArray.length;i++){
+      if(!isInArray(tmpArray[i][0], debtArray))
+        {
+           debtArray[debtArray.length] = tmpArray[i][0];
+        }
+      if(!isInArray(tmpArray[i][1], debtArray))
+        {
+           debtArray[debtArray.length] = tmpArray[i][1];
+        }
+    }
+    
+    //On crée les autres colonnes
+    //nom | dû | avancé | solde
+    for(let i=0; i<debtArray.length;i++){
+           debtArray[i] = [debtArray[i], 0, 0 ,0];
+            
+    }
+    
+    //On remplit le tableau des soldes
+    for(let i=0; i<tmpArray.length; i++){
+      let j=0;
+      let k=0;
+
+          //On cherche X (de X doit à Y)
+          while(debtArray[j][0] != tmpArray[i][0]){
+            j++;
+          }
+        
+          //On cherche Y (de X doit à Y)
+          while(debtArray[k][0] != tmpArray[i][1]){
+            k++;
+          }
+      
+      //X a avancé Y
+      if(tmpArray[i][2] >= 0)
+        {    
+          debtArray[j][2] += tmpArray[i][2];
+          debtArray[k][1] += tmpArray[i][2]; 
+        }
+      
+      //Y a avancé à X
+      else if(tmpArray[i][2] < 0)
+        {    
+          debtArray[j][1] += -tmpArray[i][2];
+          debtArray[k][2] += -tmpArray[i][2]; 
+        }
+      
+      //Mise à jour des dettes (avancé - dût)
+      debtArray[j][3] = debtArray[j][2] - debtArray[j][1];
+      debtArray[k][3] = debtArray[k][2] - debtArray[k][1];
+    }
+
+    
+    //On trie une première fois par ordre décroissant sur le solde
+    debtArray.sort(function(a, b) {
+      return parseFloat(b[3]) - parseFloat(a[3]);
+    });
+    
+    //Tant que le solde le plus élevé n'est pas 0
+    while(debtArray[0][3] != 0){
+      
+      //Le solde le plus bas donne au solde le plus haut à hauteur
+      var max = Math.min(Math.abs(debtArray[0][3]), Math.abs(debtArray[debtArray.length - 1][3]));
+      //console.log(debtArray[debtArray.length - 1][0] + " gives " + debtArray[0][0] + " " + Math.round(max * 100) / 100 + " €");
+      sendResponse(debtArray[debtArray.length - 1][0] + " gives " + debtArray[0][0] + " " + Math.round(max * 100) / 100 + " €" ,channel);
+      debtArray[debtArray.length - 1][3] += max;
+      debtArray[0][3] -= max;
+      
+      //On retrie les soldes par ordre décroissant
+      debtArray.sort(function(a, b) {
+        return parseFloat(b[3]) - parseFloat(a[3]);
+      });
+      
+    }
   })
 };
 
@@ -203,10 +310,8 @@ const BillSharingCtrl = {
         if (cmd.indexOf(' team') == 0)
           return showTeam(channel);
         if (cmd.indexOf(' report') == 0)
-          return showDigest(channel, currency);
-        if (cmd.indexOf(' rapport') == 0)
           return showNewDigest(channel, currency);
-        throw new Error("Oink oink, I did't get what you just said...");
+        throw new Error("Oink oink, I didn't get what you just said...");
       })
       .then(undefined, (err) => {
         sendResponse(err.message, channel);
