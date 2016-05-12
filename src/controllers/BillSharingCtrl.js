@@ -191,7 +191,7 @@ let showNewDigest = (channel, currency) => {
   
   //Tableau des dettes agrégées
   let debtArray = [];
-  
+
   return sendResponse("Oink oink, to even things out:", channel)
   .then(() => {
     return MemberModel.getAll()
@@ -200,7 +200,7 @@ let showNewDigest = (channel, currency) => {
 
     //Tableau des dettes X à Y
     let arrayOfPromises = [];
-      
+    
     //On récupère les noms et on prépare le tableau de dettes (X to Y : +/-Z€)
     for(let i=0; i<team.length; i++){
       for(let j=i+1; j<team.length; j++){
@@ -208,10 +208,11 @@ let showNewDigest = (channel, currency) => {
         arrayOfPromises[arrayOfPromises.length] = getDebt(team[i].username, team[j].username);
       }
     }
+
     return Promise.all(arrayOfPromises);
   })
   .then((data) =>{
-    
+
     //On remplit la dernière colonne du tableau de dettes (+/-Z€)
     for(let i=0; i<tmpArray.length; i++)
       tmpArray[i][2] = data[i];
@@ -232,7 +233,6 @@ let showNewDigest = (channel, currency) => {
     //nom | dû | avancé | solde
     for(let i=0; i<debtArray.length;i++){
            debtArray[i] = [debtArray[i], 0, 0 ,0];
-            
     }
     
     //On remplit le tableau des soldes
@@ -280,7 +280,7 @@ let showNewDigest = (channel, currency) => {
       
       //Le solde le plus bas donne au solde le plus haut à hauteur
       var max = Math.min(Math.abs(debtArray[0][3]), Math.abs(debtArray[debtArray.length - 1][3]));
-      //console.log(debtArray[debtArray.length - 1][0] + " gives " + debtArray[0][0] + " " + Math.round(max * 100) / 100 + " €");
+      
       sendResponse(debtArray[debtArray.length - 1][0] + " gives " + debtArray[0][0] + " " + Math.round(max * 100) / 100 + " €" ,channel);
       debtArray[debtArray.length - 1][3] += max;
       debtArray[0][3] -= max;
@@ -290,6 +290,9 @@ let showNewDigest = (channel, currency) => {
         return parseFloat(b[3]) - parseFloat(a[3]);
       });
       
+      //Si la dette est inférieure à 1 centimes, on l'oublie
+      if(debtArray[0][3] < 0.01)
+        debtArray[0][3] = 0;
     }
   })
 };
