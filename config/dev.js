@@ -1,3 +1,3 @@
 export default {
-  bddUri: 'candidate.62.mongolayer.com:10098,candidate.61.mongolayer.com:10413/compta-prod?replicaSet=set-568151a379f11e24e7000a65'
+  bddUri: 'lamppost.0.mongolayer.com:10421,lamppost.9.mongolayer.com:10299/compta-prod?replicaSet=set-577a7350f648c7e5f1000a63'
 }
