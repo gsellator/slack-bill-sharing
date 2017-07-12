@@ -19,6 +19,10 @@
   "bugs": {
     "url": "http://github.com/gsellator/slack-bill-sharing/issues"
   },
+  "engines": {
+    "node": "7.6.0",
+    "npm": "5.0.1"
+  },
   "scripts": {
     "start": "node index.js",
     "dev": "DEBUG=bot node index",
