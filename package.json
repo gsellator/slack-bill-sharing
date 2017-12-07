@@ -25,7 +25,8 @@
     "npm": "5.5.1"
   },
   "scripts": {
-    "dev": "DEBUG=bot node index"
+    "dev": "DEBUG=bot node index",
+    "start": "NODE_ENV=production node index"
   },
   "dependencies": {
     "babel-cli": "6.23.0",
