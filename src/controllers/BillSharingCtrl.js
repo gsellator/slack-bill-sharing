@@ -32,7 +32,7 @@ let getTotal = (name1, name2, channel, currency) => {
 
 function getDebt(name1, name2){
   let test;
-  
+
   return Promise.all([
     ExpenseModel.getSum(name1, name2),
     ExpenseModel.getSum(name2, name1)
@@ -188,7 +188,7 @@ let showDigest = (channel, currency) => {
 let showNewDigest = (channel, currency) => {
   //Tableau des dettes (X to Y : +/-Z€)
   let tmpArray = [];
-  
+
   //Tableau des dettes agrégées
   let debtArray = [];
 
@@ -200,7 +200,7 @@ let showNewDigest = (channel, currency) => {
 
     //Tableau des dettes X à Y
     let arrayOfPromises = [];
-    
+
     //On récupère les noms et on prépare le tableau de dettes (X to Y : +/-Z€)
     for(let i=0; i<team.length; i++){
       for(let j=i+1; j<team.length; j++){
@@ -216,7 +216,7 @@ let showNewDigest = (channel, currency) => {
     //On remplit la dernière colonne du tableau de dettes (+/-Z€)
     for(let i=0; i<tmpArray.length; i++)
       tmpArray[i][2] = data[i];
-    
+
     //On prépare le tableau des soldes (en fait on récupère chaque noms uniques)
     for(let i=0; i<tmpArray.length;i++){
       if(!isInArray(tmpArray[i][0], debtArray))
@@ -228,13 +228,13 @@ let showNewDigest = (channel, currency) => {
            debtArray[debtArray.length] = tmpArray[i][1];
         }
     }
-    
+
     //On crée les autres colonnes
     //nom | dû | avancé | solde
     for(let i=0; i<debtArray.length;i++){
            debtArray[i] = [debtArray[i], 0, 0 ,0];
     }
-    
+
     //On remplit le tableau des soldes
     for(let i=0; i<tmpArray.length; i++){
       let j=0;
@@ -244,52 +244,52 @@ let showNewDigest = (channel, currency) => {
           while(debtArray[j][0] != tmpArray[i][0]){
             j++;
           }
-        
+
           //On cherche Y (de X doit à Y)
           while(debtArray[k][0] != tmpArray[i][1]){
             k++;
           }
-      
+
       //X a avancé Y
       if(tmpArray[i][2] >= 0)
-        {    
+        {
           debtArray[j][2] += tmpArray[i][2];
-          debtArray[k][1] += tmpArray[i][2]; 
+          debtArray[k][1] += tmpArray[i][2];
         }
-      
+
       //Y a avancé à X
       else if(tmpArray[i][2] < 0)
-        {    
+        {
           debtArray[j][1] += -tmpArray[i][2];
-          debtArray[k][2] += -tmpArray[i][2]; 
+          debtArray[k][2] += -tmpArray[i][2];
         }
-      
+
       //Mise à jour des dettes (avancé - dût)
       debtArray[j][3] = debtArray[j][2] - debtArray[j][1];
       debtArray[k][3] = debtArray[k][2] - debtArray[k][1];
     }
 
-    
+
     //On trie une première fois par ordre décroissant sur le solde
     debtArray.sort(function(a, b) {
       return parseFloat(b[3]) - parseFloat(a[3]);
     });
-    
+
     //Tant que le solde le plus élevé n'est pas 0
     while(debtArray[0][3] != 0){
-      
+
       //Le solde le plus bas donne au solde le plus haut à hauteur
       var max = Math.min(Math.abs(debtArray[0][3]), Math.abs(debtArray[debtArray.length - 1][3]));
-      
+
       sendResponse(debtArray[debtArray.length - 1][0] + " gives " + debtArray[0][0] + " " + Math.round(max * 100) / 100 + " €" ,channel);
       debtArray[debtArray.length - 1][3] += max;
       debtArray[0][3] -= max;
-      
+
       //On retrie les soldes par ordre décroissant
       debtArray.sort(function(a, b) {
         return parseFloat(b[3]) - parseFloat(a[3]);
       });
-      
+
       //Si la dette est inférieure à 1 centimes, on l'oublie
       if(debtArray[0][3] < 0.01)
         debtArray[0][3] = 0;
@@ -304,6 +304,8 @@ const BillSharingCtrl = {
         return text.replace(botId + ':', '').replace(botId, '').toLowerCase();
       })
       .then((cmd) => {
+        if (cmd.indexOf('idiot') != -1)
+          throw new Error("Oink oink, not cool! It'll cost you 1€ next time!");
         if (cmd.indexOf(' paid ') != -1)
           return addExpense(cmd, channel, currency);
         if (cmd.indexOf(' add ') == 0)
