@@ -2,7 +2,6 @@
   "name": "slack-bill-sharing",
   "version": "1.0.37",
   "description": "Bill sharing bot for slack",
-  "main": "index.js",
   "keywords": [
     "slack"
   ],
