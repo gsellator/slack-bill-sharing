@@ -2,6 +2,7 @@
   "name": "slack-bill-sharing",
   "version": "1.0.37",
   "description": "Bill sharing bot for slack",
+  "main": "index.js",
   "keywords": [
     "slack"
   ],
@@ -24,8 +25,7 @@
     "npm": "5.5.1"
   },
   "scripts": {
-    "dev": "DEBUG=bot node index",
-    "prod": "node index"
+    "dev": "DEBUG=bot node index"
   },
   "dependencies": {
     "babel-cli": "6.23.0",
