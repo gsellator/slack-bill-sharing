@@ -21,7 +21,7 @@ const debug = require("debug")("bot");
 
 // Initialize express server
 const server = express();
-mongoose.connect('mongodb://' + process.env.DB_USER + ':' + process.env.DB_PASS + '@' + config.bddUri, function (err, res) {
+mongoose.connect('mongodb://' + process.env.DB_USER + ':' + process.env.DB_PASS + '@' + config.bddUri, { server: { ssl: true }}, (err, res) => {
   if (err) {debug ('Mongo error:' + config.bddUri + '. ' + err);}
   else {debug ('Mongo success: ' + config.bddUri);}
 });
